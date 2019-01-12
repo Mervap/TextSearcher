@@ -19,6 +19,7 @@ public:
 signals:
     void updateStatus(int);
     void countingFinish();
+    void deleteThread(QThread *);
     void message(QString);
     void updateQTreeProgress(QTreeWidgetItem *, QString, QString, TrigramCounter *);
     void deleteDirectory(QString);

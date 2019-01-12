@@ -16,6 +16,7 @@ public:
 signals:
     void preparingFinish(int);
     void updateProgressBar();
+    void deleteThread(QThread *);
     void updateFileList(QVector<QPair<QString, QString>>);
     void searchFinish();
 

@@ -36,6 +36,7 @@ public slots:
     void updateProgressBar();
     void openFile(QTreeWidgetItem *item);
     void deleteSubDirectory(QString);
+    void deleteThread(QThread *);
 
 signals:
     void stopIndexing(TrigramCounter *);

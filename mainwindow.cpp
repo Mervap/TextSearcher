@@ -118,6 +118,8 @@ void MainWindow::addDirectory() {
 
         connect(trigramCounterThread, SIGNAL(started()), trigramCounter, SLOT(countTrigrams()));
         connect(trigramCounter, SIGNAL(countingFinish()), trigramCounter, SLOT(deleteLater()));
+        connect(trigramCounter, SIGNAL(deleteThread(QThread *)), this, SLOT(deleteThread(QThread *)));
+
         connect(trigramCounter, SIGNAL(message(QString)), this, SLOT(message(QString)));
         connect(trigramCounter, SIGNAL(updateQTreeProgress(QTreeWidgetItem *, QString, QString, TrigramCounter *)),
                 this, SLOT(setQTreeItemProgress(QTreeWidgetItem *, QString, QString, TrigramCounter *)));
@@ -233,6 +235,7 @@ void MainWindow::find() {
 
     connect(searcherThread, SIGNAL(started()), searcher, SLOT(find()));
     connect(searcher, SIGNAL(searchFinish()), searcher, SLOT(deleteLater()));
+    connect(searcher, SIGNAL(deleteThread(QThread *)), this, SLOT(deleteThread(QThread *)));
 
     qRegisterMetaType<QVector<QPair<QString, QString>>>("QVector<QPair<QString, QString>>");
     connect(searcher, SIGNAL(updateFileList(QVector<QPair<QString, QString>>)), this, SLOT(addFileToList(QVector<QPair<QString, QString>>)));
@@ -258,6 +261,11 @@ void MainWindow::stopSearch() {
 
     emit stopSearching(activeSearch);
     activeSearch = nullptr;
+}
+
+void MainWindow::deleteThread(QThread *tr) {
+    tr->wait();
+    delete tr;
 }
 
 void MainWindow::setProgresBarMax(int max) {

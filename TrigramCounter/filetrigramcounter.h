@@ -30,7 +30,7 @@ private:
     static const int BUFFER_SIZE = 1 << 14;
     static const int TRIGRAM_SIZE = 3;
 
-    const bool test;
+    bool test = false;
 
 };
 

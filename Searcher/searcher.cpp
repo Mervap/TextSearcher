@@ -117,5 +117,5 @@ Searcher::~Searcher() {
 
 
     QThread::currentThread()->quit();
-    QThread::currentThread()->deleteLater();
+    emit deleteThread(QThread::currentThread());
 }
