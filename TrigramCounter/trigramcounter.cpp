@@ -38,7 +38,6 @@ void TrigramCounter::countTrigrams() {
         countOfFilesNeedToProcess = files.size();
 
         int threads_count = static_cast<int>(std::max(4u, std::thread::hardware_concurrency())) / 2;
-        QSet<int> a;
         for (int i = 0; i < std::min(threads_count, countOfFilesNeedToProcess); ++i) {
             auto *fileTrigramCounterThread = new QThread();
             auto *fileTrigramCounter = new FileTrigramCounter();
@@ -47,18 +46,13 @@ void TrigramCounter::countTrigrams() {
             while (j < countOfFilesNeedToProcess) {
                 fileTrigramCounter->addFile(files[j].second);
                 j += threads_count;
-                if (a.contains(j)) {
-                    std::cerr << "WTF\n";
-                }
-
-                a.insert(j);
             }
 
             fileTrigramCounter->moveToThread(fileTrigramCounterThread);
 
             qRegisterMetaType<QVector<TrigramContainer>>("QVector<TrigramContainer>");
 
-            connect(fileTrigramCounterThread, SIGNAL(started()), fileTrigramCounterThread, SLOT(countTrigrams()));
+            connect(fileTrigramCounterThread, SIGNAL(started()), fileTrigramCounter, SLOT(countTrigrams()));
             connect(fileTrigramCounter, SIGNAL(updateIndex(QVector<TrigramContainer>)), fileTrigramCounterThread, SLOT(quit()));
             connect(fileTrigramCounter, SIGNAL(updateIndex(QVector<TrigramContainer>)), fileTrigramCounter, SLOT(deleteLater()));
             connect(fileTrigramCounterThread, SIGNAL(finished()), fileTrigramCounterThread, SLOT(deleteLater()));

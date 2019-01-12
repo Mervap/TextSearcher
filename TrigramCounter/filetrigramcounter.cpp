@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QSet>
 #include <QThread>
+#include "../TrigramContainer/trigramcontainer.h"
 //#include <ctime>
 //#include <iostream>
 
@@ -47,7 +48,7 @@ void FileTrigramCounter::countFileTrigrams(QString filename, TrigramContainer &c
                 return;
             }
 
-            std::copy(buf + read - TRIGRAM_SIZE, buf + read - TRIGRAM_SIZE + 1, buf);
+            std::copy(buf + read - TRIGRAM_SIZE + 1, buf + read, buf);
             read = file.read(buf + TRIGRAM_SIZE - 1, BUFFER_SIZE);
             read += 2;
         }

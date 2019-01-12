@@ -31,7 +31,8 @@ SOURCES += \
     TrigramContainer/trigramcontainer.cpp \
     TrigramCounter/filetrigramcounter.cpp \
     index.cpp \
-    Searcher/searcher.cpp
+    Searcher/searcher.cpp \
+    Searcher/filesearcher.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     TrigramContainer/trigramcontainer.h \
     TrigramCounter/filetrigramcounter.h \
     index.h \
-    Searcher/searcher.h
+    Searcher/searcher.h \
+    Searcher/filesearcher.h
 
 FORMS += \
         mainwindow.ui

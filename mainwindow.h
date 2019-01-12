@@ -30,18 +30,25 @@ public slots:
     void removeDirectoryOrStopIndexing(QTreeWidgetItem *);
     void find();
     void checkLen(const QString &);
+    void addFileToList(QString, QString);
+    void setProgresBarMax(int);
+    void updateProgressBar();
+    void openFile(QTreeWidgetItem *item);
 
 signals:
     void stopIndexing(TrigramCounter *);
+    void stopSearching();
 
 private:
 
+    void stopSearch();
     void deleteDirectory(QString);
     void welcomeText();
 
     QHash<QString, TrigramCounter *> runningIndexis;
 
     int activeDirectoryProcess = 0;
+    bool activeSearch = false;
 
     Ui::MainWindow *ui;
     Index index;

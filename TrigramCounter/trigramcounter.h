@@ -1,4 +1,3 @@
-#pragma once
 #ifndef TRIGRAMCOUNTER_H
 #define TRIGRAMCOUNTER_H
 

@@ -14,7 +14,7 @@ public:
     void insert(uint32_t);
     bool contains(uint32_t) const;
     int size() const;
-    void clear() const;
+    void clear();
     bool isEmpty() const;
     QString getFilename();
 
