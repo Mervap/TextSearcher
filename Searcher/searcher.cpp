@@ -91,4 +91,6 @@ void Searcher::stopSearching() {
     for (auto thread : threads) {
         thread->requestInterruption();
     }
+
+    emit searchFinish();
 }

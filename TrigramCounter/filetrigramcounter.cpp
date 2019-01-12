@@ -70,7 +70,9 @@ void FileTrigramCounter::countTrigrams() {
         TrigramContainer container(filename);
         try {
             countFileTrigrams(filename, container);
-        } catch (WorkThreadInterruptedException) {}
+        } catch (WorkThreadInterruptedException) {
+            emit workDone();
+        }
 
         if (!container.isEmpty()) {
             result.push_back(std::move(container));
@@ -80,4 +82,5 @@ void FileTrigramCounter::countTrigrams() {
     }
 
     emit updateIndex(result);
+    emit workDone();
 }

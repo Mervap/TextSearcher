@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->findButton->setEnabled(false);
     ui->addDirectoryButton->setEnabled(false);
     ui->inputString->setEnabled(false);
-    ui->resultFiles->sortByColumn(0);
+    ui->resultFiles->sortByColumn(0, Qt::SortOrder::AscendingOrder);
 
     connect(ui->directoryName, SIGNAL(textChanged(const QString &)), this, SLOT(directoryNameTextChanged(const QString &)));
     connect(ui->choseDirectoryButton, SIGNAL(clicked()), this, SLOT(chooseDir()));

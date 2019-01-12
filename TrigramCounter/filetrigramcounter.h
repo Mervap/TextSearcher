@@ -19,6 +19,7 @@ signals:
     void message(QString);
     void updateProgress();
     void updateIndex(QVector<TrigramContainer>);
+    void workDone();
 
 private:
     void countFileTrigrams(QString filename, TrigramContainer &container);

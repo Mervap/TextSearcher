@@ -24,7 +24,11 @@ void FileSearcher::search() {
                 emit updateFileList("");
             }
         }
-    } catch (WorkThreadInterruptedException) {}
+    } catch (WorkThreadInterruptedException) {
+        emit workDone();
+    }
+
+    emit workDone();
 }
 
 

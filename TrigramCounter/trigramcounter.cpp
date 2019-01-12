@@ -56,8 +56,8 @@ void TrigramCounter::countTrigrams() {
             qRegisterMetaType<QVector<TrigramContainer>>("QVector<TrigramContainer>");
 
             connect(fileTrigramCounterThread, SIGNAL(started()), fileTrigramCounter, SLOT(countTrigrams()));
-            connect(fileTrigramCounter, SIGNAL(updateIndex(QVector<TrigramContainer>)), fileTrigramCounterThread, SLOT(quit()));
-            connect(fileTrigramCounter, SIGNAL(updateIndex(QVector<TrigramContainer>)), fileTrigramCounter, SLOT(deleteLater()));
+            connect(fileTrigramCounter, SIGNAL(workDone()), fileTrigramCounterThread, SLOT(quit()));
+            connect(fileTrigramCounter, SIGNAL(workDone()), fileTrigramCounter, SLOT(deleteLater()));
             connect(fileTrigramCounterThread, SIGNAL(finished()), fileTrigramCounterThread, SLOT(deleteLater()));
             connect(fileTrigramCounter, SIGNAL(updateIndex(QVector<TrigramContainer>)), this, SLOT(updateIndex(QVector<TrigramContainer>)));
             connect(fileTrigramCounter, SIGNAL(updateProgress()), this, SLOT(updateProgress()));
@@ -109,4 +109,6 @@ void TrigramCounter::stopCounting(TrigramCounter *t) {
     for (auto thread : threads) {
         thread->requestInterruption();
     }
+
+    emit countingFinish();
 }
