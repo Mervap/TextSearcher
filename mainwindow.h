@@ -7,6 +7,7 @@
 #include <QHash>
 #include "TrigramContainer/trigramcontainer.h"
 #include "TrigramCounter/trigramcounter.h"
+#include "Searcher/searcher.h"
 #include "index.h"
 
 namespace Ui {
@@ -38,7 +39,7 @@ public slots:
 
 signals:
     void stopIndexing(TrigramCounter *);
-    void stopSearching();
+    void stopSearching(Searcher *);
 
 private:
 
@@ -49,7 +50,7 @@ private:
     QHash<QString, TrigramCounter *> runningIndexis;
 
     int activeDirectoryProcess = 0;
-    bool activeSearch = false;
+    Searcher *activeSearch = nullptr;
 
     Ui::MainWindow *ui;
     Index index;

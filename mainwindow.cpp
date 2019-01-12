@@ -246,11 +246,12 @@ void MainWindow::checkLen(const QString &str) {
 void MainWindow::find() {
 
     stopSearch();
-    activeSearch = true;
+    ui->resultFiles->clear();
     QString input = ui->inputString->text();
 
     auto *searcherThread = new QThread();
     auto *searcher = new Searcher(input, &index);
+    activeSearch = searcher;
     searcher->moveToThread(searcherThread);
 
     connect(searcherThread, SIGNAL(started()), searcher, SLOT(find()));
@@ -258,11 +259,9 @@ void MainWindow::find() {
     connect(searcher, SIGNAL(searchFinish()), searcher, SLOT(deleteLater()));
     connect(searcherThread, SIGNAL(finished()), searcherThread, SLOT(deleteLater()));
     connect(searcher, SIGNAL(updateFileList(QVector<QPair<QString, QString>>)), this, SLOT(addFileToList(QVector<QPair<QString, QString>>)));
-    connect(this, SIGNAL(stopSearching()), searcher, SLOT(stopSearching()));
+    connect(this, SIGNAL(stopSearching(Searcher *)), searcher, SLOT(stopSearching(Searcher *)));
     connect(searcher, SIGNAL(preparingFinish(int)), this, SLOT(setProgresBarMax(int)));
     connect(searcher, SIGNAL(updateProgressBar()), this, SLOT(updateProgressBar()));
-
-    ui->resultFiles->clear();
 
     searcherThread->start();
 }
@@ -276,12 +275,12 @@ void MainWindow::addFileToList(QVector<QPair<QString, QString>> res) {
 }
 
 void MainWindow::stopSearch() {
-    if (!activeSearch) {
+    if (activeSearch == nullptr) {
         return;
     }
 
-    activeSearch = false;
-    emit stopSearch();
+    emit stopSearching(activeSearch);
+    activeSearch = nullptr;
 }
 
 void MainWindow::setProgresBarMax(int max) {

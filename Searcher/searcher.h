@@ -20,7 +20,7 @@ signals:
 public slots:
     void find();
     void updateProgress(QString);
-    void stopSearching();
+    void stopSearching(Searcher *);
 
 private:
     Index *index;

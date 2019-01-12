@@ -78,9 +78,12 @@ void Searcher::updateProgress(QString str) {
     ++process;
     if (str != "") {
         buffer.push_back(QPair<QString, QString>(QDir(str).dirName(), str));
-        if (buffer.size() > 200 || process == countOfFilesNeedToProcess) {
-            emit updateFileList(buffer);
+        if (buffer.size() > 200) {
             buffer.clear();
+        }
+
+        if (buffer.size() == 200 || process == countOfFilesNeedToProcess) {
+            emit updateFileList(buffer);
         }
     }
 
@@ -89,7 +92,10 @@ void Searcher::updateProgress(QString str) {
     }
 }
 
-void Searcher::stopSearching() {
+void Searcher::stopSearching(Searcher *s) {
+    if (s != this) {
+        return;
+    }
     stoped = true;
 
     for (auto thread : threads) {
