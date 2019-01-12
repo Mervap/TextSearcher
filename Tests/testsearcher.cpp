@@ -56,7 +56,8 @@ void TestSearcher::testHelper(const QString &input, const QVector<QString> &file
 
     searcherThread->start();
 
-    QVERIFY(spy1.wait(3000));
+    //QVERIFY(spy1.wait(10000));
+    QTest::qWait(3000);
 
     for (int i = 0; i < files.size(); ++i) {
         QFile(files[i]).remove();
