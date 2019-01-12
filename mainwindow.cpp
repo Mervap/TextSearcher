@@ -14,7 +14,7 @@
 #include "Searcher/searcher.h"
 
 
-extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
+//extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
 void MainWindow::welcomeText() {
     ui->logList->insertHtml("<div style=\"text-align: center;\"><b>Welcome!</b></div>"
@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    qt_ntfs_permission_lookup++; // turn checking on
+    //qt_ntfs_permission_lookup++; // turn checking on
 
     welcomeText();
     ui->resultFiles->setHeaderHidden(false);
