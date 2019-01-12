@@ -14,7 +14,7 @@ public:
 signals:
     void preparingFinish(int);
     void updateProgressBar();
-    void updateFileList(QString, QString);
+    void updateFileList(QVector<QPair<QString, QString>>);
     void searchFinish();
 
 public slots:
@@ -31,6 +31,8 @@ private:
     int process = 0;
     int countOfFilesNeedToProcess = 0;
     bool stoped = false;
+
+    QVector<QPair<QString, QString>> buffer;
 
     std::chrono::steady_clock::time_point begin;
 };

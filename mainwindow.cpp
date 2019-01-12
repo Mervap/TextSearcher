@@ -53,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->findButton->setEnabled(false);
     ui->addDirectoryButton->setEnabled(false);
     ui->inputString->setEnabled(false);
+    ui->resultFiles->setSortingEnabled(true);
     ui->resultFiles->sortByColumn(0, Qt::SortOrder::AscendingOrder);
 
     connect(ui->directoryName, SIGNAL(textChanged(const QString &)), this, SLOT(directoryNameTextChanged(const QString &)));
@@ -256,7 +257,7 @@ void MainWindow::find() {
     connect(searcher, SIGNAL(searchFinish()), searcherThread, SLOT(quit()));
     connect(searcher, SIGNAL(searchFinish()), searcher, SLOT(deleteLater()));
     connect(searcherThread, SIGNAL(finished()), searcherThread, SLOT(deleteLater()));
-    connect(searcher, SIGNAL(updateFileList(QString, QString)), this, SLOT(addFileToList(QString, QString)));
+    connect(searcher, SIGNAL(updateFileList(QVector<QPair<QString, QString>>)), this, SLOT(addFileToList(QVector<QPair<QString, QString>>)));
     connect(this, SIGNAL(stopSearching()), searcher, SLOT(stopSearching()));
     connect(searcher, SIGNAL(preparingFinish(int)), this, SLOT(setProgresBarMax(int)));
     connect(searcher, SIGNAL(updateProgressBar()), this, SLOT(updateProgressBar()));
@@ -266,10 +267,12 @@ void MainWindow::find() {
     searcherThread->start();
 }
 
-void MainWindow::addFileToList(QString filename, QString path) {
-    auto item = new QTreeWidgetItem(ui->resultFiles);
-    item->setText(0, filename);
-    item->setText(1, path);
+void MainWindow::addFileToList(QVector<QPair<QString, QString>> res) {
+    for (int i = 0; i < res.size(); ++i) {
+        auto item = new QTreeWidgetItem(ui->resultFiles);
+        item->setText(0, res[i].first);
+        item->setText(1, res[i].second);
+    }
 }
 
 void MainWindow::stopSearch() {

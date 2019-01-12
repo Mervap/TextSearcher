@@ -77,7 +77,11 @@ void Searcher::updateProgress(QString str) {
     emit updateProgressBar();
     ++process;
     if (str != "") {
-        emit updateFileList(QDir(str).dirName(), str);
+        buffer.push_back(QPair<QString, QString>(QDir(str).dirName(), str));
+        if (buffer.size() > 200 || process == countOfFilesNeedToProcess) {
+            emit updateFileList(buffer);
+            buffer.clear();
+        }
     }
 
     if (process == countOfFilesNeedToProcess) {

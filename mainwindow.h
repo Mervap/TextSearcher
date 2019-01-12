@@ -30,7 +30,7 @@ public slots:
     void removeDirectoryOrStopIndexing(QTreeWidgetItem *);
     void find();
     void checkLen(const QString &);
-    void addFileToList(QString, QString);
+    void addFileToList(QVector<QPair<QString, QString>>);
     void setProgresBarMax(int);
     void updateProgressBar();
     void openFile(QTreeWidgetItem *item);

@@ -45,7 +45,8 @@ void TestSearcher::testHelper(const QString &input, const QVector<QString> &file
     }
 
     Searcher searcher(input, &index);
-    QSignalSpy spy1(&searcher, SIGNAL(updateFileList(QString, QString)));
+    qRegisterMetaType<QVector<QPair<QString, QString>>>("QVector<QPair<QString, QString>>");
+    QSignalSpy spy1(&searcher, SIGNAL(updateFileList(QVector<QPair<QString, QString>>)));
     QSignalSpy spy2(&searcher, SIGNAL(searchFinish()));
     searcher.find();
 
@@ -55,11 +56,16 @@ void TestSearcher::testHelper(const QString &input, const QVector<QString> &file
         QFile(files[i]).remove();
     }
 
-    QCOMPARE(spy1.size(), ans.size());
+    int cnt = 0;
     for (int i = 0; i < spy1.size(); ++i) {
-        auto res = spy1.at(i);
-        QVERIFY(ans.contains(spy1.at(i).at(1).value<QString>()));
+        auto res = spy1.at(i).at(0).value<QVector<QPair<QString, QString>>>();
+        for (int j = 0; j < res.size(); ++j) {
+            QVERIFY(ans.contains(res[j].second));
+            ++cnt;
+        }
     }
+
+    QCOMPARE(cnt, ans.size());
 
 }
 
