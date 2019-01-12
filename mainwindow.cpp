@@ -99,11 +99,11 @@ void MainWindow::addDirectory() {
     QDir dir = QDir(ui->directoryName->text());
     bool havePermisson = QFile::permissions(ui->directoryName->text()) & QFile::ReadUser;
     if (!havePermisson) {
-        message("<div>Directory \"" + dir.absolutePath() + "\" <span style=\"color: red;\">can't be open</span></div>");
+        message("<div>Directory \"" + dir.absolutePath() + "\" <span style=\"color: red;\">cannot be opened</span></div>");
         return;
     }
     if (index.allDirs.contains(dir.absolutePath())) {
-        message("Directory \"" + dir.absolutePath() + "\" already index");
+        message("Directory \"" + dir.absolutePath() + "\" already indexed");
     } else {
         stopSearch();
         ui->findButton->setEnabled(false);
@@ -122,6 +122,7 @@ void MainWindow::addDirectory() {
         connect(trigramCounter, SIGNAL(updateQTreeProgress(QTreeWidgetItem *, QString, QString, TrigramCounter *)),
                 this, SLOT(setQTreeItemProgress(QTreeWidgetItem *, QString, QString, TrigramCounter *)));
         connect(this, SIGNAL(stopIndexing(TrigramCounter *)), trigramCounter, SLOT(stopCounting(TrigramCounter *)));
+        connect(trigramCounter, SIGNAL(deleteDirectory(QString)), this, SLOT(deleteSubDirectory(QString)));
 
         item->setText(0, dir.dirName());
         item->setText(1, dir.absolutePath());
@@ -141,8 +142,8 @@ void MainWindow::removeDirectoryOrStopIndexing(QTreeWidgetItem *item) {
     question.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     question.setDefaultButton(QMessageBox::Cancel);
     if (item->text(2) != "Done") {
-        question.setWindowTitle("Stop index directory");
-        question.setText(QString("You're going to stop index %1 directory, are you sure?").arg(dir));
+        question.setWindowTitle("Cancel the indexing directory");
+        question.setText(QString("You're going to stop index \"%1\" directory, are you sure?").arg(dir));
         question.setInformativeText("<div style=\"color: red;\">The process cannot be stopped!</div>");
 
         if (question.exec() == QMessageBox::Cancel) {
@@ -158,21 +159,21 @@ void MainWindow::removeDirectoryOrStopIndexing(QTreeWidgetItem *item) {
         item->setText(2, "Stop indexing...");
     } else {
         ++activeDirectoryProcess;
-        question.setWindowTitle("Deleting directory from index");
-        question.setText(QString("You're going to delete %1 directory, are you sure?").arg(dir));
+        question.setWindowTitle("Remove a directory from the index list");
+        question.setText(QString("You're going to remove \"%1\" directory from the index list, are you sure?").arg(dir));
         question.setInformativeText("<div style=\"color: red;\">The process cannot be stopped!</div>");
 
         if (question.exec() == QMessageBox::Cancel) {
             return;
         }
-        item->setText(2, "Deleting...");
+        item->setText(2, "Removing...");
     }
 
     deleteDirectory(item->text(1));
-    if (item->text(2) == "Deleting...") {
-        message("\nDirectory \"" + dir + "\" complitely delete from index");
+    if (item->text(2) == "Removing...") {
+        message("\nDirectory \"" + dir + "\" completely remove from index list");
     } else  {
-        message("\nStop indexsing directory \"" + dir + "\" complite");
+        message("\nIndexing directory \"" + dir + "\" completely cancel");
     }
 
     delete item;
@@ -198,6 +199,33 @@ void MainWindow::deleteDirectory(QString dir) {
 
     index.dirs.remove(dir);
     index.files.remove(dir);
+}
+
+void MainWindow::deleteSubDirectory(QString dir) {
+
+    int i = 0;
+    while (auto item = ui->directoryList->topLevelItem(i)) {
+        if (item->text(1) == dir) {
+            break;
+        }
+        ++i;
+    }
+
+    auto item = ui->directoryList->topLevelItem(i);
+    if (item == nullptr) {
+        return;
+    }
+
+    if (item->text(2) != "Done") {
+        auto tr = *runningIndexis.find(dir);
+        runningIndexis.remove(dir);
+        emit stopIndexing(tr);
+    }
+
+    index.dirs.remove(dir);
+    index.files.remove(dir);
+
+    delete item;
 }
 
 void MainWindow::checkLen(const QString &str) {

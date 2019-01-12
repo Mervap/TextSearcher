@@ -20,14 +20,17 @@ void TrigramCounter::countTrigrams() {
         while (it.hasNext()) {
             auto current = it.next();
             if (it.fileInfo().isDir()) {
+                if (index->allDirs.contains(current)) {
+                    emit deleteDirectory(current);
+                }
                 index->allDirs.insert(current);
                 index->dirs[dir].push_back(current);
                 bool havePermisson = QFile::permissions(it.filePath()) & QFile::ReadUser;
                 if (!havePermisson) {
-                    emit message("<div>Directory \"" + it.filePath() + "\" <span style=\"color: red;\">can't be open</span></div>");
+                    emit message("<div>Directory \"" + it.filePath() + "\" <span style=\"color: red;\">cannot be open</span></div>");
                 }
             } else if (!it.fileInfo().isReadable()) {
-                emit message("<div>File \"" + it.filePath() + "\" <span style=\"color: red;\">can't be read</span></div>");
+                emit message("<div>File \"" + it.filePath() + "\" <span style=\"color: red;\">cannot be read</span></div>");
             } else {
                 files.push_back(QPair<qint64, QString>(it.fileInfo().size(), current));
             }
@@ -77,7 +80,7 @@ void TrigramCounter::updateProgress() {
     if (process == countOfFilesNeedToProcess) {
         emit updateQTreeProgress(item, "Done", dir, this);
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-        emit message("\nDirectory \"" + dir + "\" complitily inexing by " +
+        emit message("\nDirectory \"" + dir + "\" completely indexed by " +
                      QString::number(std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()) +
                      "ms");
         emit countingFinish();

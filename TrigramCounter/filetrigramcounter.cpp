@@ -59,7 +59,7 @@ void FileTrigramCounter::countFileTrigrams(QString filename, TrigramContainer &c
             container.insert(tr);
         }
     } else {
-        emit message("<div>File \"" + filename + "\" <span style=\"color: red;\">can't be read</span></div>");
+        emit message("<div>File \"" + filename + "\" <span style=\"color: red;\">cannot be read</span></div>");
     }
 }
 
