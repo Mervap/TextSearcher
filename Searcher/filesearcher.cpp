@@ -26,9 +26,11 @@ void FileSearcher::search() {
         }
     } catch (WorkThreadInterruptedException) {
         emit workDone();
+        QThread::currentThread()->quit();
     }
 
     emit workDone();
+    QThread::currentThread()->quit();
 }
 
 

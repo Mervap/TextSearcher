@@ -13,7 +13,7 @@ TestFileTrigramCounter::TestFileTrigramCounter(QObject *parent) : QObject(parent
 Q_DECLARE_METATYPE(TrigramContainer);
 
 void TestFileTrigramCounter::testHelper(const QVector<QString> &fileTexts, QVector<QVector<uint32_t>> &answer) {
-    FileTrigramCounter ftc;
+    FileTrigramCounter ftc(true);
 
     QVector<QString> files;
     for (int i = 0; i < fileTexts.size(); ++i) {

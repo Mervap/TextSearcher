@@ -14,6 +14,8 @@ public:
     explicit TrigramCounter(QDir dir, Index *index, QTreeWidgetItem *item, QObject *parent = nullptr) :
         QObject(parent),  dir(dir.absolutePath()), index(index), item(item) {}
 
+    ~TrigramCounter();
+
 signals:
     void updateStatus(int);
     void countingFinish();

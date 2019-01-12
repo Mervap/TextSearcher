@@ -28,7 +28,9 @@ void FileTrigramCounter::countFileTrigrams(QString filename, TrigramContainer &c
 
         QSet<uint32_t> t;
         while (read >= TRIGRAM_SIZE) {
-            InterruptionRequest();
+            if (!test) {
+                InterruptionRequest();
+            }
             uint32_t hash = 0;
             for (int i = 0; i < static_cast<int>(read); ++i) {
                 if (i < TRIGRAM_SIZE) {
@@ -72,6 +74,9 @@ void FileTrigramCounter::countTrigrams() {
             countFileTrigrams(filename, container);
         } catch (WorkThreadInterruptedException) {
             emit workDone();
+            if (!test) {
+                QThread::currentThread()->quit();
+            }
         }
 
         if (!container.isEmpty()) {
@@ -83,4 +88,8 @@ void FileTrigramCounter::countTrigrams() {
 
     emit updateIndex(result);
     emit workDone();
+
+    if (!test) {
+        QThread::currentThread()->quit();
+    }
 }

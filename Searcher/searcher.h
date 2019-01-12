@@ -9,7 +9,9 @@
 class Searcher : public QObject {
     Q_OBJECT
 public:
-    explicit Searcher(QString input, Index *index,  QObject *parent = nullptr) : QObject(parent), index(index), input(input.toStdString()) {}
+    explicit Searcher(QString input, Index *index, QObject *parent = nullptr) : QObject(parent), index(index), input(input.toStdString()) {}
+
+    ~Searcher();
 
 signals:
     void preparingFinish(int);

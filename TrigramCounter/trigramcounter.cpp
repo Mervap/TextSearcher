@@ -44,7 +44,7 @@ void TrigramCounter::countTrigrams() {
         int threads_count = static_cast<int>(std::max(4u, std::thread::hardware_concurrency())) / 2;
         for (int i = 0; i < std::min(threads_count, countOfFilesNeedToProcess); ++i) {
             auto *fileTrigramCounterThread = new QThread();
-            auto *fileTrigramCounter = new FileTrigramCounter();
+            auto *fileTrigramCounter = new FileTrigramCounter(false);
 
             int j = i;
             while (j < countOfFilesNeedToProcess) {
@@ -57,9 +57,7 @@ void TrigramCounter::countTrigrams() {
             qRegisterMetaType<QVector<TrigramContainer>>("QVector<TrigramContainer>");
 
             connect(fileTrigramCounterThread, SIGNAL(started()), fileTrigramCounter, SLOT(countTrigrams()));
-            connect(fileTrigramCounter, SIGNAL(workDone()), fileTrigramCounterThread, SLOT(quit()));
             connect(fileTrigramCounter, SIGNAL(workDone()), fileTrigramCounter, SLOT(deleteLater()));
-            connect(fileTrigramCounterThread, SIGNAL(finished()), fileTrigramCounterThread, SLOT(deleteLater()));
             connect(fileTrigramCounter, SIGNAL(updateIndex(QVector<TrigramContainer>)), this, SLOT(updateIndex(QVector<TrigramContainer>)));
             connect(fileTrigramCounter, SIGNAL(updateProgress()), this, SLOT(updateProgress()));
             connect(fileTrigramCounter, SIGNAL(message(QString)), this, SIGNAL(message(QString)));
@@ -107,9 +105,20 @@ void TrigramCounter::stopCounting(TrigramCounter *t) {
 
     index->allDirs.remove(dir);
 
+    emit countingFinish();
+}
+
+TrigramCounter::~TrigramCounter() {
     for (auto thread : threads) {
         thread->requestInterruption();
     }
 
-    emit countingFinish();
+    for (auto thread : threads) {
+        thread->wait();
+        delete thread;
+    }
+
+    QThread::currentThread()->quit();
+    QThread::currentThread()->deleteLater();
 }
+

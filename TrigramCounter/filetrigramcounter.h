@@ -8,7 +8,7 @@
 class FileTrigramCounter : public QObject {
     Q_OBJECT
 public:
-    explicit FileTrigramCounter() : filenames(QVector<QString>()) {}
+    explicit FileTrigramCounter(bool test) : filenames(QVector<QString>()), test(test) {}
 
     void addFile(QString filename);
 
@@ -29,6 +29,8 @@ private:
 
     static const int BUFFER_SIZE = 1 << 14;
     static const int TRIGRAM_SIZE = 3;
+
+    const bool test;
 
 };
 

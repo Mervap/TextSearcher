@@ -14,7 +14,7 @@ Q_DECLARE_METATYPE(TrigramContainer);
 
 void TestSearcher::testHelper(const QString &input, const QVector<QString> &fileTexts, QSet<QString> &ans) {
     Index index;
-    FileTrigramCounter ftc;
+    FileTrigramCounter ftc(true);
 
     QVector<QString> files;
     for (int i = 0; i < fileTexts.size(); ++i) {
@@ -44,13 +44,19 @@ void TestSearcher::testHelper(const QString &input, const QVector<QString> &file
         }
     }
 
-    Searcher searcher(input, &index);
-    qRegisterMetaType<QVector<QPair<QString, QString>>>("QVector<QPair<QString, QString>>");
-    QSignalSpy spy1(&searcher, SIGNAL(updateFileList(QVector<QPair<QString, QString>>)));
-    QSignalSpy spy2(&searcher, SIGNAL(searchFinish()));
-    searcher.find();
+    auto *searcherThread = new QThread();
+    auto *searcher = new Searcher(input, &index);
+    searcher->moveToThread(searcherThread);
 
-    QTest::qWait(100);
+    connect(searcherThread, SIGNAL(started()), searcher, SLOT(find()));
+    connect(searcher, SIGNAL(searchFinish()), searcher, SLOT(deleteLater()));
+
+    qRegisterMetaType<QVector<QPair<QString, QString>>>("QVector<QPair<QString, QString>>");
+    QSignalSpy spy1(searcher, SIGNAL(updateFileList(QVector<QPair<QString, QString>>)));
+
+    searcherThread->start();
+
+    QVERIFY(spy1.wait(3000));
 
     for (int i = 0; i < files.size(); ++i) {
         QFile(files[i]).remove();

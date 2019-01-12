@@ -60,9 +60,7 @@ void Searcher::find() {
         fileSearcher->moveToThread(fileSearcherThread);
 
         connect(fileSearcherThread, SIGNAL(started()), fileSearcher, SLOT(search()));
-        connect(fileSearcher, SIGNAL(workDone()), fileSearcherThread, SLOT(quit()));
         connect(fileSearcher, SIGNAL(workDone()), fileSearcher, SLOT(deleteLater()));
-        connect(fileSearcherThread, SIGNAL(finished()), fileSearcherThread, SLOT(deleteLater()));
         connect(fileSearcher, SIGNAL(updateFileList(QString)), this, SLOT(updateProgress(QString)));
 
         threads.push_back(fileSearcherThread);
@@ -79,16 +77,19 @@ void Searcher::updateProgress(QString str) {
     ++process;
     if (str != "") {
         buffer.push_back(QPair<QString, QString>(QDir(str).dirName(), str));
-        if (buffer.size() > 200) {
-            buffer.clear();
-        }
 
         if (buffer.size() == 200 || process == countOfFilesNeedToProcess) {
             emit updateFileList(buffer);
+            buffer.clear();
         }
     }
 
     if (process == countOfFilesNeedToProcess) {
+        if (!buffer.empty()) {
+            emit updateFileList(buffer);
+            buffer.clear();
+        }
+
         emit searchFinish();
     }
 }
@@ -97,11 +98,24 @@ void Searcher::stopSearching(Searcher *s) {
     if (s != this) {
         return;
     }
+
     stoped = true;
 
+    emit searchFinish();
+}
+
+
+Searcher::~Searcher() {
     for (auto thread : threads) {
         thread->requestInterruption();
     }
 
-    emit searchFinish();
+    for (auto thread : threads) {
+        thread->wait();
+        delete thread;
+    }
+
+
+    QThread::currentThread()->quit();
+    QThread::currentThread()->deleteLater();
 }
