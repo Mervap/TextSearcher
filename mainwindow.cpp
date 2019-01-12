@@ -138,34 +138,13 @@ void MainWindow::addDirectory() {
 void MainWindow::removeDirectoryOrStopIndexing(QTreeWidgetItem *item) {
 
     QString dir = item->text(1);
-    QMessageBox question;
-    question.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-    question.setDefaultButton(QMessageBox::Cancel);
     if (item->text(2) != "Done") {
-        question.setWindowTitle("Cancel the indexing directory");
-        question.setText(QString("You're going to stop index \"%1\" directory, are you sure?").arg(dir));
-        question.setInformativeText("<div style=\"color: red;\">The process cannot be stopped!</div>");
-
-        if (question.exec() == QMessageBox::Cancel) {
-            return;
-        }
-
-        if (item->text(2) != "Done") {
-            auto tr = *runningIndexis.find(dir);
-            runningIndexis.remove(dir);
-            emit stopIndexing(tr);
-        }
+        auto tr = *runningIndexis.find(dir);
+        runningIndexis.remove(dir);
+        emit stopIndexing(tr);
 
         item->setText(2, "Stop indexing...");
     } else {
-        ++activeDirectoryProcess;
-        question.setWindowTitle("Remove a directory from the index list");
-        question.setText(QString("You're going to remove \"%1\" directory from the index list, are you sure?").arg(dir));
-        question.setInformativeText("<div style=\"color: red;\">The process cannot be stopped!</div>");
-
-        if (question.exec() == QMessageBox::Cancel) {
-            return;
-        }
         item->setText(2, "Removing...");
     }
 
