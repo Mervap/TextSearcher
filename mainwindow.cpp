@@ -13,6 +13,7 @@
 #include "TrigramCounter/trigramcounter.h"
 #include "Searcher/searcher.h"
 
+
 extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
 void MainWindow::welcomeText() {

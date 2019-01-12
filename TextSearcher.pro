@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -32,7 +33,10 @@ SOURCES += \
     TrigramCounter/filetrigramcounter.cpp \
     index.cpp \
     Searcher/searcher.cpp \
-    Searcher/filesearcher.cpp
+    Searcher/filesearcher.cpp \
+    Tests/testfilesearcher.cpp \
+    Tests/testsearcher.cpp \
+    Tests/testfiletrigramcounter.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +45,10 @@ HEADERS += \
     TrigramCounter/filetrigramcounter.h \
     index.h \
     Searcher/searcher.h \
-    Searcher/filesearcher.h
+    Searcher/filesearcher.h \
+    Tests/testfilesearcher.h \
+    Tests/testsearcher.h \
+    Tests/testfiletrigramcounter.h
 
 FORMS += \
         mainwindow.ui

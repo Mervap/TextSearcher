@@ -13,6 +13,7 @@ public:
     friend class TrigramCounter;
     friend class MainWindow;
     friend class Searcher;
+    friend class TestSearcher;
 
 private:
     QHash<QString, QVector<TrigramContainer>> files;

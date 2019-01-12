@@ -43,6 +43,7 @@ void FileTrigramCounter::countFileTrigrams(QString filename, TrigramContainer &c
             }
 
             t.insert(hash);
+
             if (t.size() > 20000) {
                 t.clear();
                 return;
