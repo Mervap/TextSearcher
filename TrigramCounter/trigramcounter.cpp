@@ -5,6 +5,7 @@
 #include <thread>
 #include <iostream>
 #include <chrono>
+#include <thread>
 
 #include "filetrigramcounter.h"
 

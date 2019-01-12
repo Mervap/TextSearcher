@@ -2,6 +2,7 @@
 #include <QThread>
 #include <QDir>
 #include "filesearcher.h"
+#include <thread>
 
 void Searcher::find() {
     QSet<uint32_t> trigrams;
