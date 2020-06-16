@@ -20,7 +20,7 @@ void TestFileSearcher::testHelper(const QString &input, const QString &fileText,
         fs.search();
 
         QCOMPARE(spy.size(), 1);
-        QCOMPARE(spy.at(0).at(0), ok ? file.fileName() : "");
+        QCOMPARE(spy.at(0).at(0).toString(), ok ? file.fileName() : "");
     } else {
         std::cerr << "Can't create file for test\n";
     }
